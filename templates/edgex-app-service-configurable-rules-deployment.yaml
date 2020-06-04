@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: edgex-app-service-configurable-rules
+  name: edgex-app-service-configurable-rules
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: edgex-app-service-configurable-rules
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: edgex-app-service-configurable-rules
+    spec:
+      containers:
+      - env:
+        - name: Clients_CoreData_Host
+          value: edgex-core-data
+        - name: Clients_Logging_Host
+          value: edgex-support-logging
+        - name: EDGEX_SECURITY_SECRET_STORE
+          value: "false"
+        - name: Logging_EnableRemote
+          value: "true"
+        - name: MessageBus_SubscribeHost_Host
+          value: edgex-core-data
+        - name: Service_Host
+          value: edgex-app-service-configurable-rules
+        - name: edgex_profile
+          value: rules-engine
+        - name: edgex_registry
+          value: consul://edgex-core-consul:8500
+        - name: edgex_service
+          value: http://edgex-app-service-configurable-rules:48100
+        image: edgexfoundry/docker-app-service-configurable:1.0.0
+        name: edgex-app-service-configurable-rules
+        ports:
+        - containerPort: 48100
+        resources: {}
+      hostname: edgex-app-service-configurable-rules
+      restartPolicy: Always
+status: {}

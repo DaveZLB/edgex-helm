@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: edgex-support-scheduler
+  name: edgex-support-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: edgex-support-scheduler
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: edgex-support-scheduler
+    spec:
+      containers:
+      - env:
+        - name: edgex_registry
+          value: consul://edgex-core-consul:8500
+        - name: Clients_CoreData_Host
+          value: edgex-core-data
+        - name: Clients_Logging_Host
+          value: edgex-support-logging
+        - name: EDGEX_SECURITY_SECRET_STORE
+          value: "false"
+        - name: Logging_EnableRemote
+          value: "true"
+        image: edgexfoundry/docker-support-scheduler-go:1.1.0
+        name: edgex-support-scheduler
+        ports:
+        - containerPort: 48085
+        resources: {}
+      hostname: edgex-support-scheduler
+      restartPolicy: Always
+status: {}

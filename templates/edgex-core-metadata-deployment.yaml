@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: edgex-core-metadata
+  name: edgex-core-metadata
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: edgex-core-metadata
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: edgex-core-metadata
+    spec:
+      containers:
+      - env:
+        - name: edgex_registry
+          value: consul://edgex-core-consul:8500
+        - name: Clients_CoreData_Host
+          value: edgex-core-data
+        - name: Clients_Logging_Host
+          value: edgex-support-logging
+        - name: EDGEX_SECURITY_SECRET_STORE
+          value: "false"
+        - name: Logging_EnableRemote
+          value: "true"
+        image: edgexfoundry/docker-core-metadata-go:1.1.0
+        name: edgex-core-metadata
+        ports:
+        - containerPort: 48081
+        resources: {}
+      hostname: edgex-core-metadata
+      restartPolicy: Always
+status: {}

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: edgex-app-service-configurable-mqtt-export
+  name: edgex-app-service-configurable-mqtt-export
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: edgex-app-service-configurable-mqtt-export
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: edgex-app-service-configurable-mqtt-export
+    spec:
+      containers:
+      - env:
+        - name: Clients_CoreData_Host
+          value: edgex-core-data
+        - name: Clients_Logging_Host
+          value: edgex-support-logging
+        - name: EDGEX_SECURITY_SECRET_STORE
+          value: "false"
+        - name: Logging_EnableRemote
+          value: "true"
+        - name: MessageBus_SubscribeHost_Host
+          value: edgex-core-data
+        - name: Service_Host
+          value: edgex-app-service-configurable-mqtt-export
+        - name: edgex_profile
+          value: mqtt-export
+        - name: edgex_registry
+          value: consul://edgex-core-consul:8500
+        - name: edgex_service
+          value: http://edgex-app-service-configurable-mqtt-export:48097
+        - name: Writable_Pipeline_Functions_MQTTSend_Addressable_Address
+          value: 192.168.0.100
+        - name: Writable_Pipeline_Functions_MQTTSend_Addressable_Port
+          value: "1883"
+        - name: Writable_Pipeline_Functions_MQTTSend_Addressable_Protocol
+          value: tcp
+        - name: Writable_Pipeline_Functions_MQTTSend_Addressable_Topic
+          value: edgex-handson-topic
+        image: edgexfoundry/docker-app-service-configurable:1.0.0
+        name: edgex-app-service-configurable-mqtt-export
+        ports:
+        - containerPort: 48097
+        resources: {}
+      hostname: edgex-app-service-configurable-mqtt-export
+      restartPolicy: Always
+status: {}

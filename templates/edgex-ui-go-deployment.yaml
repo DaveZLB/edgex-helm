@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: edgex-ui-go
+  name: edgex-ui-go
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: edgex-ui-go
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: edgex-ui-go
+    spec:
+      containers:
+      - image: edgexfoundry/docker-edgex-ui-go:1.1.0
+        name: edgex-ui-go
+        ports:
+        - containerPort: 4000
+        resources: {}
+      hostname: edgex-ui-go
+      restartPolicy: Always
+status: {}

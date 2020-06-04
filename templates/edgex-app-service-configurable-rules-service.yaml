@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    org.edgexfoundry.service: edgex-app-service-configurable-rules
+  name: edgex-app-service-configurable-rules
+spec:
+  ports:
+  - name: "48100"
+    port: 48100
+    targetPort: 48100
+  selector:
+    org.edgexfoundry.service: edgex-app-service-configurable-rules
+status:
+  loadBalancer: {}

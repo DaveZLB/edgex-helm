@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: edgex-support-rulesengine
+  name: edgex-support-rulesengine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: edgex-support-rulesengine
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: edgex-support-rulesengine
+    spec:
+      containers:
+      - image: edgexfoundry/docker-support-rulesengine:1.1.0
+        name: edgex-support-rulesengine
+        ports:
+        - containerPort: 48075
+        resources: {}
+      hostname: edgex-support-rulesengine
+      restartPolicy: Always
+status: {}
