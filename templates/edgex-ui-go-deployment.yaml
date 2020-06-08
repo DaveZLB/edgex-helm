@@ -17,10 +17,27 @@ spec:
         org.edgexfoundry.service: edgex-ui-go
     spec:
       containers:
-      - image: edgexfoundry/docker-edgex-ui-go:1.1.0
-        name: edgex-ui-go
+      - name: edgex-ui-go
+        image: edgexfoundry/docker-edgex-ui-go:1.1.0
+        imagePullPolicy: Always
         ports:
         - containerPort: 4000
+        readinessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 4000
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 4000
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
         resources: {}
       hostname: edgex-ui-go
       restartPolicy: Always

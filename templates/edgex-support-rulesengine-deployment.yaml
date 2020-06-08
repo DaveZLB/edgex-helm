@@ -16,10 +16,27 @@ spec:
         org.edgexfoundry.service: edgex-support-rulesengine
     spec:
       containers:
-      - image: edgexfoundry/docker-support-rulesengine:1.1.0
-        name: edgex-support-rulesengine
+      - name: edgex-support-rulesengine
+        image: edgexfoundry/docker-support-rulesengine:1.1.0
+        imagePullPolicy: Always
         ports:
         - containerPort: 48075
+        readinessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 48075
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 48075
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
         resources: {}
       hostname: edgex-support-rulesengine
       restartPolicy: Always

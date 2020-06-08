@@ -17,7 +17,12 @@ spec:
         org.edgexfoundry.service: edgex-sys-mgmt-agent
     spec:
       containers:
-      - env:
+      - name: edgex-sys-mgmt-agent
+        image: edgexfoundry/docker-sys-mgmt-agent-go:1.1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 48090
+        env:
         - name: edgex_registry
           value: consul://edgex-core-consul:8500
         - name: Clients_CoreData_Host
@@ -28,11 +33,27 @@ spec:
           value: "false"
         - name: Logging_EnableRemote
           value: "true"
-        image: edgexfoundry/docker-sys-mgmt-agent-go:1.1.0
-        name: edgex-sys-mgmt-agent
-        ports:
-        - containerPort: 48090
+        readinessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 48090
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 48090
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
         resources: {}
+      initContainers:
+      - name: wait-for-consul
+        image: busybox:1.28
+        command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
       hostname: edgex-sys-mgmt-agent
       restartPolicy: Always
 status: {}

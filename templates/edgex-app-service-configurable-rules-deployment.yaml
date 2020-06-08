@@ -16,7 +16,12 @@ spec:
         org.edgexfoundry.service: edgex-app-service-configurable-rules
     spec:
       containers:
-      - env:
+      - name: edgex-app-service-configurable-rules
+        image: edgexfoundry/docker-app-service-configurable:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 48100
+        env:
         - name: Clients_CoreData_Host
           value: edgex-core-data
         - name: Clients_Logging_Host
@@ -35,11 +40,11 @@ spec:
           value: consul://edgex-core-consul:8500
         - name: edgex_service
           value: http://edgex-app-service-configurable-rules:48100
-        image: edgexfoundry/docker-app-service-configurable:1.0.0
-        name: edgex-app-service-configurable-rules
-        ports:
-        - containerPort: 48100
         resources: {}
+      initContainers:
+      - name: wait-for-consul
+        image: busybox:1.28
+        command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
       hostname: edgex-app-service-configurable-rules
       restartPolicy: Always
 status: {}

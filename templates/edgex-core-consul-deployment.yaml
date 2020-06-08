@@ -17,11 +17,20 @@ spec:
         org.edgexfoundry.service: edgex-core-consul
     spec:
       containers:
-      - image: consul:1.3.1
-        name: edgex-core-consul
+      - name: edgex-core-consul
+        image: consul:1.3.1
+        imagePullPolicy: Always
         ports:
         - containerPort: 8400
         - containerPort: 8500
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8500
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
         resources: {}
         volumeMounts:
         - mountPath: /consul/config

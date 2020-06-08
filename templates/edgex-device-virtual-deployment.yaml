@@ -17,11 +17,16 @@ spec:
         org.edgexfoundry.service: edgex-device-virtual
     spec:
       containers:
-      - image: edgexfoundry/docker-device-virtual-go:1.1.1
-        name: edgex-device-virtual
+      - name: edgex-device-virtual
+        image: edgexfoundry/docker-device-virtual-go:1.1.1
+        imagePullPolicy: Always
         ports:
         - containerPort: 49990
         resources: {}
+      initContainers:
+      - name: wait-for-consul
+        image: busybox:1.28
+        command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
       hostname: edgex-device-virtual
       restartPolicy: Always
 status: {}

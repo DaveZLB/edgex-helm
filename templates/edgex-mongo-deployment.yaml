@@ -17,7 +17,12 @@ spec:
         org.edgexfoundry.service: edgex-mongo
     spec:
       containers:
-      - env:
+      - name: edgex-mongo
+        image: edgexfoundry/docker-edgex-mongo:1.1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 27017
+        env:
         - name: edgex_registry
           value: consul://edgex-core-consul:8500
         - name: Clients_CoreData_Host
@@ -28,10 +33,20 @@ spec:
           value: "false"
         - name: Logging_EnableRemote
           value: "true"
-        image: edgexfoundry/docker-edgex-mongo:1.1.0
-        name: edgex-mongo
-        ports:
-        - containerPort: 27017
+        readinessProbe:
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
         resources: {}
         volumeMounts:
         - mountPath: /data/db
