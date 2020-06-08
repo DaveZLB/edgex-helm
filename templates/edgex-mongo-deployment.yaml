@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: {{.Values.edgex.mongo.name}}
+  name: {{.Values.edgex.mongo.name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: edgex-mongo
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: {{.Values.edgex.mongo.name}}
+    spec:
+      containers:
+      - name: {{.Values.edgex.mongo.name}}
+        image: {{.Values.edgex.mongo.image}}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 27017
+        env:
+        - name: edgex_registry
+          value: consul://{{.Values.edgex.consul.name}}:8500
+        - name: Clients_CoreData_Host
+          value: {{.Values.edgex.data.name}}
+        - name: Clients_Logging_Host
+          value: {{.Values.edgex.logging.name}}
+        - name: EDGEX_SECURITY_SECRET_STORE
+          value: "false"
+        - name: Logging_EnableRemote
+          value: "true"
+        readinessProbe:
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        resources: {}
+        volumeMounts:
+        - mountPath: /data/db
+          name: db-data
+      hostname: {{.Values.edgex.mongo.name}}
+      restartPolicy: Always
+      volumes:
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: db-data
+status: {}

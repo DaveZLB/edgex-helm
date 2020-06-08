@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    org.edgexfoundry.service: {{.Values.edgex.rulesengine.name}}
+  name: {{.Values.edgex.rulesengine.name}}
+spec:
+  ports:
+  - name: "48075"
+    port: 48075
+    targetPort: 48075
+  selector:
+    org.edgexfoundry.service: {{.Values.edgex.rulesengine.name}}
+status:
+  loadBalancer: {}

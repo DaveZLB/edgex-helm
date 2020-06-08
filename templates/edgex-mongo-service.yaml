@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    org.edgexfoundry.service: {{.Values.edgex.mongo.name}}
+  name: {{.Values.edgex.mongo.name}}
+spec:
+  ports:
+  - name: "27017"
+    port: 27017
+    targetPort: 27017
+  selector:
+    org.edgexfoundry.service: {{.Values.edgex.mongo.name}}
+  type: LoadBalancer
+status:
+  loadBalancer: {}

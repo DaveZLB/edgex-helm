@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: {{.Values.edgex.rulesengine.name}}
+  name: {{.Values.edgex.rulesengine.name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: {{.Values.edgex.rulesengine.name}}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: {{.Values.edgex.rulesengine.name}}
+    spec:
+      containers:
+      - name: {{.Values.edgex.rulesengine.name}}
+        image: {{.Values.edgex.rulesengine.image}}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 48075
+        readinessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 48075
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 48075
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        resources: {}
+      hostname: {{.Values.edgex.rulesengine.name}}
+      restartPolicy: Always
+status: {}

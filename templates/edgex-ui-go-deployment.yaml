@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: {{.Values.edgex.ui.name}}
+  name: {{.Values.edgex.ui.name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: {{.Values.edgex.ui.name}}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: {{.Values.edgex.ui.name}}
+    spec:
+      containers:
+      - name: {{.Values.edgex.ui.name}}
+        image: {{.Values.edgex.ui.image}}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4000
+        readinessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 4000
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 4000
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        resources: {}
+      hostname: {{.Values.edgex.ui.name}}
+      restartPolicy: Always
+status: {}

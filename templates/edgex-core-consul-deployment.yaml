@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: {{.Values.edgex.consul.name}}
+  name: {{.Values.edgex.consul.name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: {{.Values.edgex.consul.name}}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: {{.Values.edgex.consul.name}}
+    spec:
+      containers:
+      - name: {{.Values.edgex.consul.name}}
+        image: {{.Values.edgex.consul.image}}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8400
+        - containerPort: 8500
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8500
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        resources: {}
+        volumeMounts:
+        - mountPath: /consul/config
+          name: consul-config
+        - mountPath: /consul/data
+          name: consul-data
+      hostname: {{.Values.edgex.consul.name}}
+      restartPolicy: Always
+      volumes:
+      - name: consul-config
+        persistentVolumeClaim:
+          claimName: consul-config
+      - name: consul-data
+        persistentVolumeClaim:
+          claimName: consul-data
+status: {}

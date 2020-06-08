@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    org.edgexfoundry.service: {{.Values.edgex.logging.name}}
+  name: {{.Values.edgex.logging.name}}
+spec:
+  ports:
+  - name: "48061"
+    port: 48061
+    targetPort: 48061
+  selector:
+    org.edgexfoundry.service: {{.Values.edgex.logging.name}}
+status:
+  loadBalancer: {}
