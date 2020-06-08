@@ -2,11 +2,14 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    org.edgexfoundry.service: edgex-core-config-seed
-  name: edgex-core-config-seed
+    org.edgexfoundry.service: {{.Values.edgex.configSeed.name}}
+  name: {{.Values.edgex.configSeed.name}}
 spec:
   containers:
-  - env:
+  - name: {{.Values.edgex.configSeed.name}}
+    image: {{.Values.edgex.configSeed.image}}
+    imagePullPolicy: Always
+    env:
     - name: edgex_registry
       value: consul://edgex-core-consul:8500
     - name: Clients_CoreData_Host
@@ -19,8 +22,6 @@ spec:
       value: "true"
     - name: Service.Host
       value: 0.0.0.0
-    image: edgexfoundry/docker-core-config-seed-go:1.1.0
-    name: edgex-config-seed
     resources: {}
     volumeMounts:
     - mountPath: /edgex/logs
@@ -29,7 +30,7 @@ spec:
   - name: wait-for-consul
     image: busybox:1.28
     command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
-  hostname: edgex-config-seed
+  hostname: {{.Values.edgex.configSeed.name}}
   restartPolicy: Never
   volumes:
   - name: log-data

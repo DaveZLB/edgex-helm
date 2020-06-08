@@ -2,22 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: edgex-support-rulesengine
-  name: edgex-support-rulesengine
+    org.edgexfoundry.service: {{.Values.edgex.rulesengine.name}}
+  name: {{.Values.edgex.rulesengine.name}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      org.edgexfoundry.service: edgex-support-rulesengine
+      org.edgexfoundry.service: {{.Values.edgex.rulesengine.name}}
   strategy: {}
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: edgex-support-rulesengine
+        org.edgexfoundry.service: {{.Values.edgex.rulesengine.name}}
     spec:
       containers:
-      - name: edgex-support-rulesengine
-        image: edgexfoundry/docker-support-rulesengine:1.1.0
+      - name: {{.Values.edgex.rulesengine.name}}
+        image: {{.Values.edgex.rulesengine.image}}
         imagePullPolicy: Always
         ports:
         - containerPort: 48075
@@ -38,6 +38,6 @@ spec:
           successThreshold: 1
           failureThreshold: 3
         resources: {}
-      hostname: edgex-support-rulesengine
+      hostname: {{.Values.edgex.rulesengine.name}}
       restartPolicy: Always
 status: {}

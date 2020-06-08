@@ -2,33 +2,33 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: edgex-support-scheduler
-  name: edgex-support-scheduler
+    org.edgexfoundry.service: {{.Values.edgex.scheduler.name}}
+  name: {{.Values.edgex.scheduler.name}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      org.edgexfoundry.service: edgex-support-scheduler
+      org.edgexfoundry.service: {{.Values.edgex.scheduler.name}}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: edgex-support-scheduler
+        org.edgexfoundry.service: {{.Values.edgex.scheduler.name}}
     spec:
       containers:
-      - name: edgex-support-scheduler
+      - name: {{.Values.edgex.scheduler.name}}
         image: edgexfoundry/docker-support-scheduler-go:1.1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 48085
         env:
         - name: edgex_registry
-          value: consul://edgex-core-consul:8500
+          value: consul://{{.Values.edgex.consul.name}}:8500
         - name: Clients_CoreData_Host
-          value: edgex-core-data
+          value: {{.Values.edgex.data.name}}
         - name: Clients_Logging_Host
-          value: edgex-support-logging
+          value: {{.Values.edgex.logging.name}}
         - name: EDGEX_SECURITY_SECRET_STORE
           value: "false"
         - name: Logging_EnableRemote
@@ -54,6 +54,6 @@ spec:
       - name: wait-for-consul
         image: busybox:1.28
         command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
-      hostname: edgex-support-scheduler
+      hostname: {{.Values.edgex.scheduler.name}}
       restartPolicy: Always
 status: {}

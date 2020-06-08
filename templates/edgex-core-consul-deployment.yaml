@@ -2,23 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: edgex-core-consul
-  name: edgex-core-consul
+    org.edgexfoundry.service: {{.Values.edgex.consul.name}}
+  name: {{.Values.edgex.consul.name}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      org.edgexfoundry.service: edgex-core-consul
+      org.edgexfoundry.service: {{.Values.edgex.consul.name}}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: edgex-core-consul
+        org.edgexfoundry.service: {{.Values.edgex.consul.name}}
     spec:
       containers:
-      - name: edgex-core-consul
-        image: consul:1.3.1
+      - name: {{.Values.edgex.consul.name}}
+        image: {{.Values.edgex.consul.image}}
         imagePullPolicy: Always
         ports:
         - containerPort: 8400
@@ -37,7 +37,7 @@ spec:
           name: consul-config
         - mountPath: /consul/data
           name: consul-data
-      hostname: edgex-core-consul
+      hostname: {{.Values.edgex.consul.name}}
       restartPolicy: Always
       volumes:
       - name: consul-config

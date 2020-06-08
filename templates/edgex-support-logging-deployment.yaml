@@ -2,33 +2,33 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: edgex-support-logging
-  name: edgex-support-logging
+    org.edgexfoundry.service: {{.Values.edgex.logging.name}}
+  name: {{.Values.edgex.logging.name}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      org.edgexfoundry.service: edgex-support-logging
+      org.edgexfoundry.service: {{.Values.edgex.logging.name}}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: edgex-support-logging
+        org.edgexfoundry.service: {{.Values.edgex.logging.name}}
     spec:
       containers:
-      - name: edgex-support-logging
-        image: edgexfoundry/docker-support-logging-go:1.1.0
+      - name: {{.Values.edgex.logging.name}}
+        image: {{.Values.edgex.logging.image}}
         imagePullPolicy: Always
         ports:
         - containerPort: 48061
         env:
         - name: edgex_registry
-          value: consul://edgex-core-consul:8500
+          value: consul://{{.Values.edgex.consul.name}}:8500
         - name: Clients_CoreData_Host
-          value: edgex-core-data
+          value: {{.Values.edgex.data.name}}
         - name: Clients_Logging_Host
-          value: edgex-support-logging
+          value: {{.Values.edgex.logging.name}}
         - name: EDGEX_SECURITY_SECRET_STORE
           value: "false"
         - name: Logging_EnableRemote
@@ -57,7 +57,7 @@ spec:
       - name: wait-for-consul
         image: busybox:1.28
         command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
-      hostname: edgex-support-logging
+      hostname: {{.Values.edgex.logging.name}}
       restartPolicy: Always
       volumes:
       - name: log-data

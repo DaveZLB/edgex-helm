@@ -2,49 +2,49 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: edgex-app-service-configurable-rules
-  name: edgex-app-service-configurable-rules
+    org.edgexfoundry.service: {{.Values.edgex.appServiceRules.name}}
+  name: {{.Values.edgex.appServiceRules.name}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      org.edgexfoundry.service: edgex-app-service-configurable-rules
+      org.edgexfoundry.service: {{.Values.edgex.appServiceRules.name}}
   strategy: {}
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: edgex-app-service-configurable-rules
+        org.edgexfoundry.service: {{.Values.edgex.appServiceRules.name}}
     spec:
       containers:
-      - name: edgex-app-service-configurable-rules
-        image: edgexfoundry/docker-app-service-configurable:1.0.0
+      - name: {{.Values.edgex.appServiceRules.name}}
+        image: {{.Values.edgex.appServiceRules.image}}
         imagePullPolicy: Always
         ports:
         - containerPort: 48100
         env:
         - name: Clients_CoreData_Host
-          value: edgex-core-data
+          value: {{.Values.edgex.data.name}}
         - name: Clients_Logging_Host
-          value: edgex-support-logging
+          value: {{.Values.edgex.logging.name}}
         - name: EDGEX_SECURITY_SECRET_STORE
           value: "false"
         - name: Logging_EnableRemote
           value: "true"
         - name: MessageBus_SubscribeHost_Host
-          value: edgex-core-data
+          value: {{.Values.edgex.data.name}}
         - name: Service_Host
-          value: edgex-app-service-configurable-rules
+          value: {{.Values.edgex.appServiceRules.name}}
         - name: edgex_profile
           value: rules-engine
         - name: edgex_registry
-          value: consul://edgex-core-consul:8500
+          value: consul://{{.Values.edgex.consul.name}}:8500
         - name: edgex_service
-          value: http://edgex-app-service-configurable-rules:48100
+          value: http://{{.Values.edgex.appServiceRules.name}}:48100
         resources: {}
       initContainers:
       - name: wait-for-consul
         image: busybox:1.28
         command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
-      hostname: edgex-app-service-configurable-rules
+      hostname: {{.Values.edgex.appServiceRules.name}}
       restartPolicy: Always
 status: {}
