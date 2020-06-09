@@ -2,14 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.scheduler.name}}
-  name: {{.Values.edgex.scheduler.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.support.scheduler}}
+  name: {{.Values.edgex.app.support.scheduler}}
 spec:
   ports:
   - name: "48085"
     port: 48085
     targetPort: 48085
   selector:
-    org.edgexfoundry.service: {{.Values.edgex.scheduler.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.support.scheduler}}
 status:
   loadBalancer: {}

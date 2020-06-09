@@ -2,15 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.ui.name}}
-  name: {{.Values.edgex.ui.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.ui}}
+  name: {{.Values.edgex.app.ui}}
 spec:
   ports:
   - name: "4000"
     port: 4000
     targetPort: 4000
   selector:
-    org.edgexfoundry.service: {{.Values.edgex.ui.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.ui}}
   type: LoadBalancer
 status:
   loadBalancer: {}

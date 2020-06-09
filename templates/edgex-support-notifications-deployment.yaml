@@ -2,37 +2,31 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.notifications.name}}
-  name: {{.Values.edgex.notifications.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.support.notifications}}
+  name: {{.Values.edgex.app.support.notifications}}
 spec:
-  replicas: 1
+  replicas: {{.Values.edgex.replicas.support.notifications}}
   selector:
     matchLabels:
-      org.edgexfoundry.service: {{.Values.edgex.notifications.name}}
+      org.edgexfoundry.service: {{.Values.edgex.app.support.notifications}}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: {{.Values.edgex.notifications.name}}
+        org.edgexfoundry.service: {{.Values.edgex.app.support.notifications}}
     spec:
       containers:
-      - name: {{.Values.edgex.notifications.name}}
-        image: {{.Values.edgex.notifications.image}}
-        imagePullPolicy: Always
+      - name: {{.Values.edgex.app.support.notifications}}
+        image: {{.Values.edgex.image.support.notifications.repository}}:{{.Values.edgex.image.support.notifications.tag}}
+        imagePullPolicy: {{.Values.edgex.image.support.notifications.pullPolicy}}
         ports:
         - containerPort: 48060
         env:
         - name: edgex_registry
-          value: consul://{{.Values.edgex.consul.name}}:8500
-        - name: Clients_CoreData_Host
-          value: {{.Values.edgex.data.name}}
-        - name: Clients_Logging_Host
-          value: {{.Values.edgex.logging.name}}
+          value: consul://{{.Values.edgex.app.core.consul}}:8500
         - name: EDGEX_SECURITY_SECRET_STORE
           value: "false"
-        - name: Logging_EnableRemote
-          value: "true"
         readinessProbe:
           httpGet:
             path: /api/v1/ping
@@ -49,11 +43,15 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           failureThreshold: 3
-        resources: {}
-      initContainers:
-      - name: wait-for-consul
-        image: busybox:1.28
-        command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
-      hostname: {{.Values.edgex.notifications.name}}
+      {{- if .Values.edgex.resources.support.notifications.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.support.notifications.limits.memory }}
+            cpu: {{ .Values.edgex.resources.support.notifications.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.support.notifications.requests.memory }}
+            cpu: {{ .Values.edgex.resources.support.notifications.requests.cpu }}
+      {{- end}}
+      hostname: {{.Values.edgex.app.support.notifications}}
       restartPolicy: Always
 status: {}

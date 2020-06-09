@@ -2,14 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.deviceVirtual.name}}
-  name: {{.Values.edgex.deviceVirtual.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.device.virtual}}
+  name: {{.Values.edgex.app.device.virtual}}
 spec:
   ports:
   - name: "49990"
     port: 49990
     targetPort: 49990
   selector:
-    org.edgexfoundry.service: {{.Values.edgex.deviceVirtual.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.device.virtual}}
 status:
   loadBalancer: {}

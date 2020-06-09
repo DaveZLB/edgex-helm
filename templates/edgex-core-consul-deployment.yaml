@@ -2,24 +2,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.consul.name}}
-  name: {{.Values.edgex.consul.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.core.consul}}
+  name: {{.Values.edgex.app.core.consul}}
 spec:
-  replicas: 1
+  replicas: {{.Values.edgex.replicas.core.consul}}
   selector:
     matchLabels:
-      org.edgexfoundry.service: {{.Values.edgex.consul.name}}
+      org.edgexfoundry.service: {{.Values.edgex.app.core.consul}}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: {{.Values.edgex.consul.name}}
+        org.edgexfoundry.service: {{.Values.edgex.app.core.consul}}
     spec:
       containers:
-      - name: {{.Values.edgex.consul.name}}
-        image: {{.Values.edgex.consul.image}}
-        imagePullPolicy: Always
+      - name: {{.Values.edgex.app.core.consul}}
+        image: {{.Values.edgex.image.core.consul.repository}}:{{.Values.edgex.image.core.consul.tag}}
+        imagePullPolicy: {{.Values.edgex.image.core.consul.pullPolicy}}
         ports:
         - containerPort: 8400
         - containerPort: 8500
@@ -31,13 +31,21 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           failureThreshold: 3
-        resources: {}
+      {{- if .Values.edgex.resources.core.consul.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.core.consul.limits.memory }}
+            cpu: {{ .Values.edgex.resources.core.consul.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.core.consul.requests.memory }}
+            cpu: {{ .Values.edgex.resources.core.consul.requests.cpu }}
+      {{- end}}
         volumeMounts:
         - mountPath: /consul/config
           name: consul-config
         - mountPath: /consul/data
           name: consul-data
-      hostname: {{.Values.edgex.consul.name}}
+      hostname: {{.Values.edgex.app.core.consul}}
       restartPolicy: Always
       volumes:
       - name: consul-config

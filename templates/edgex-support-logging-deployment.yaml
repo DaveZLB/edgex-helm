@@ -2,37 +2,31 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.logging.name}}
-  name: {{.Values.edgex.logging.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.support.logging}}
+  name: {{.Values.edgex.app.support.logging}}
 spec:
-  replicas: 1
+  replicas: {{.Values.edgex.replicas.support.logging}}
   selector:
     matchLabels:
-      org.edgexfoundry.service: {{.Values.edgex.logging.name}}
+      org.edgexfoundry.service: {{.Values.edgex.app.support.logging}}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: {{.Values.edgex.logging.name}}
+        org.edgexfoundry.service: {{.Values.edgex.app.support.logging}}
     spec:
       containers:
-      - name: {{.Values.edgex.logging.name}}
-        image: {{.Values.edgex.logging.image}}
-        imagePullPolicy: Always
+      - name: {{.Values.edgex.app.support.logging}}
+        image: {{.Values.edgex.image.support.logging.repository}}:{{.Values.edgex.image.support.logging.tag}}
+        imagePullPolicy: {{.Values.edgex.image.support.logging.pullPolicy}}
         ports:
         - containerPort: 48061
         env:
         - name: edgex_registry
-          value: consul://{{.Values.edgex.consul.name}}:8500
-        - name: Clients_CoreData_Host
-          value: {{.Values.edgex.data.name}}
-        - name: Clients_Logging_Host
-          value: {{.Values.edgex.logging.name}}
+          value: consul://{{.Values.edgex.app.core.consul}}:8500
         - name: EDGEX_SECURITY_SECRET_STORE
           value: "false"
-        - name: Logging_EnableRemote
-          value: "true"
         readinessProbe:
           httpGet:
             path: /api/v1/ping
@@ -49,15 +43,19 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           failureThreshold: 3
-        resources: {}
+      {{- if .Values.edgex.resources.support.logging.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.support.logging.limits.memory }}
+            cpu: {{ .Values.edgex.resources.support.logging.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.support.logging.requests.memory }}
+            cpu: {{ .Values.edgex.resources.support.logging.requests.cpu }}
+      {{- end}}
         volumeMounts:
         - mountPath: /edgex/logs
           name: log-data
-      initContainers:
-      - name: wait-for-consul
-        image: busybox:1.28
-        command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
-      hostname: {{.Values.edgex.logging.name}}
+      hostname: {{.Values.edgex.app.support.logging}}
       restartPolicy: Always
       volumes:
       - name: log-data

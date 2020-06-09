@@ -2,10 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.mongo.name}}
-  name: {{.Values.edgex.mongo.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.mongo}}
+  name: {{.Values.edgex.app.mongo}}
 spec:
-  replicas: 1
+  replicas: {{.Values.edgex.replicas.mongo}}
   selector:
     matchLabels:
       org.edgexfoundry.service: edgex-mongo
@@ -14,25 +14,19 @@ spec:
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: {{.Values.edgex.mongo.name}}
+        org.edgexfoundry.service: {{.Values.edgex.app.mongo}}
     spec:
       containers:
-      - name: {{.Values.edgex.mongo.name}}
-        image: {{.Values.edgex.mongo.image}}
-        imagePullPolicy: Always
+      - name: {{.Values.edgex.app.mongo}}
+        image: {{.Values.edgex.image.mongo.repository}}:{{.Values.edgex.image.mongo.tag}}
+        imagePullPolicy: {{.Values.edgex.image.mongo.pullPolicy}}
         ports:
         - containerPort: 27017
         env:
         - name: edgex_registry
-          value: consul://{{.Values.edgex.consul.name}}:8500
-        - name: Clients_CoreData_Host
-          value: {{.Values.edgex.data.name}}
-        - name: Clients_Logging_Host
-          value: {{.Values.edgex.logging.name}}
+          value: consul://{{.Values.edgex.app.core.consul}}:8500
         - name: EDGEX_SECURITY_SECRET_STORE
           value: "false"
-        - name: Logging_EnableRemote
-          value: "true"
         readinessProbe:
           tcpSocket:
             port: 27017
@@ -47,11 +41,19 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           failureThreshold: 3
-        resources: {}
+      {{- if .Values.edgex.resources.mongo.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.mongo.limits.memory }}
+            cpu: {{ .Values.edgex.resources.mongo.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.mongo.requests.memory }}
+            cpu: {{ .Values.edgex.resources.mongo.requests.cpu }}
+      {{- end}}
         volumeMounts:
         - mountPath: /data/db
           name: db-data
-      hostname: {{.Values.edgex.mongo.name}}
+      hostname: {{.Values.edgex.app.mongo}}
       restartPolicy: Always
       volumes:
       - name: db-data
