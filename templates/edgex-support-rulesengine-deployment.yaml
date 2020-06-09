@@ -2,23 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.rulesengine.name}}
-  name: {{.Values.edgex.rulesengine.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.support.rulesengine}}
+  name: {{.Values.edgex.app.support.rulesengine}}
 spec:
-  replicas: 1
+  replicas: {{.Values.edgex.replicas.support.rulesengine}}
   selector:
     matchLabels:
-      org.edgexfoundry.service: {{.Values.edgex.rulesengine.name}}
+      org.edgexfoundry.service: {{.Values.edgex.app.support.rulesengine}}
   strategy: {}
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: {{.Values.edgex.rulesengine.name}}
+        org.edgexfoundry.service: {{.Values.edgex.app.support.rulesengine}}
     spec:
       containers:
-      - name: {{.Values.edgex.rulesengine.name}}
-        image: {{.Values.edgex.rulesengine.image}}
-        imagePullPolicy: Always
+      - name: {{.Values.edgex.app.support.rulesengine}}
+        image: {{.Values.edgex.image.support.rulesengine.repository}}:{{.Values.edgex.image.support.rulesengine.tag}}
+        imagePullPolicy: {{.Values.edgex.image.support.rulesengine.pullPolicy}}
         ports:
         - containerPort: 48075
         readinessProbe:
@@ -37,7 +37,15 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           failureThreshold: 3
-        resources: {}
-      hostname: {{.Values.edgex.rulesengine.name}}
+      {{- if .Values.edgex.resources.support.rulesengine.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.support.rulesengine.limits.memory }}
+            cpu: {{ .Values.edgex.resources.support.rulesengine.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.support.rulesengine.requests.memory }}
+            cpu: {{ .Values.edgex.resources.support.rulesengine.requests.cpu }}
+      {{- end}}
+      hostname: {{.Values.edgex.app.support.rulesengine}}
       restartPolicy: Always
 status: {}

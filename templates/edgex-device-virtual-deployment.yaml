@@ -2,31 +2,46 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.deviceVirtual.name}}
-  name: {{.Values.edgex.deviceVirtual.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.device.virtual}}
+  name: {{.Values.edgex.app.device.virtual}}
 spec:
-  replicas: 1
+  replicas: {{.Values.edgex.replicas.device.virtual}}
   selector:
     matchLabels:
-      org.edgexfoundry.service: {{.Values.edgex.deviceVirtual.name}}
+      org.edgexfoundry.service: {{.Values.edgex.app.device.virtual}}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: {{.Values.edgex.deviceVirtual.name}}
+        org.edgexfoundry.service: {{.Values.edgex.app.device.virtual}}
     spec:
       containers:
-      - name: {{.Values.edgex.deviceVirtual.name}}
-        image: {{.Values.edgex.deviceVirtual.image}}
-        imagePullPolicy: Always
+      - name: {{.Values.edgex.app.device.virtual}}
+        image: {{.Values.edgex.image.device.virtual.repository}}:{{.Values.edgex.image.device.virtual.tag}}
+        imagePullPolicy: {{.Values.edgex.image.device.virtual.pullPolicy}}
         ports:
         - containerPort: 49990
-        resources: {}
-      initContainers:
-      - name: wait-for-consul
-        image: busybox:1.28
-        command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
-      hostname: {{.Values.edgex.deviceVirtual.name}}
+        env:
+        - name: edgex_registry
+          value: consul://{{.Values.edgex.app.core.consul}}:8500
+        - name: Clients_Data_Host
+          value: {{.Values.edgex.app.core.data}}
+        - name: Clients_Metadata_Host
+          value: {{.Values.edgex.app.core.metadata}}
+        - name: Clients_Logging_Host
+          value: {{.Values.edgex.app.support.logging}}
+        - name: Logging_EnableRemote
+          value: "false"
+      {{- if .Values.edgex.resources.device.virtual.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.device.virtual.limits.memory }}
+            cpu: {{ .Values.edgex.resources.device.virtual.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.device.virtual.requests.memory }}
+            cpu: {{ .Values.edgex.resources.device.virtual.requests.cpu }}
+      {{- end}}
+      hostname: {{.Values.edgex.app.device.virtual}}
       restartPolicy: Always
 status: {}

@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.consul.name}}
-  name: {{.Values.edgex.consul.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.core.consul}}
+  name: {{.Values.edgex.app.core.consul}}
 spec:
   ports:
   - name: "8400"
@@ -13,7 +13,7 @@ spec:
     port: 8500
     targetPort: 8500
   selector:
-    org.edgexfoundry.service: {{.Values.edgex.consul.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.core.consul}}
   type: LoadBalancer
 status:
   loadBalancer: {}

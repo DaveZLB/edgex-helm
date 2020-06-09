@@ -2,37 +2,31 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.scheduler.name}}
-  name: {{.Values.edgex.scheduler.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.support.scheduler}}
+  name: {{.Values.edgex.app.support.scheduler}}
 spec:
-  replicas: 1
+  replicas: {{.Values.edgex.replicas.support.scheduler}}
   selector:
     matchLabels:
-      org.edgexfoundry.service: {{.Values.edgex.scheduler.name}}
+      org.edgexfoundry.service: {{.Values.edgex.app.support.scheduler}}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: {{.Values.edgex.scheduler.name}}
+        org.edgexfoundry.service: {{.Values.edgex.app.support.scheduler}}
     spec:
       containers:
-      - name: {{.Values.edgex.scheduler.name}}
-        image: edgexfoundry/docker-support-scheduler-go:1.1.0
-        imagePullPolicy: Always
+      - name: {{.Values.edgex.app.support.scheduler}}
+        image: {{.Values.edgex.image.support.scheduler.repository}}:{{.Values.edgex.image.support.scheduler.tag}}
+        imagePullPolicy: {{.Values.edgex.image.support.scheduler.pullPolicy}}
         ports:
         - containerPort: 48085
         env:
         - name: edgex_registry
-          value: consul://{{.Values.edgex.consul.name}}:8500
-        - name: Clients_CoreData_Host
-          value: {{.Values.edgex.data.name}}
-        - name: Clients_Logging_Host
-          value: {{.Values.edgex.logging.name}}
+          value: consul://{{.Values.edgex.app.core.consul}}:8500
         - name: EDGEX_SECURITY_SECRET_STORE
           value: "false"
-        - name: Logging_EnableRemote
-          value: "true"
         readinessProbe:
           httpGet:
             path: /api/v1/ping
@@ -49,11 +43,15 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           failureThreshold: 3
-        resources: {}
-      initContainers:
-      - name: wait-for-consul
-        image: busybox:1.28
-        command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
-      hostname: {{.Values.edgex.scheduler.name}}
+      {{- if .Values.edgex.resources.support.scheduler.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.support.scheduler.limits.memory }}
+            cpu: {{ .Values.edgex.resources.support.scheduler.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.support.scheduler.requests.memory }}
+            cpu: {{ .Values.edgex.resources.support.scheduler.requests.cpu }}
+      {{- end}}
+      hostname: {{.Values.edgex.app.support.scheduler}}
       restartPolicy: Always
 status: {}

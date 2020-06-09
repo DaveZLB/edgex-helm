@@ -2,37 +2,33 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.system.name}}
-  name: {{.Values.edgex.system.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.system}}
+  name: {{.Values.edgex.app.system}}
 spec:
-  replicas: 1
+  replicas: {{.Values.edgex.replicas.system}}
   selector:
     matchLabels:
-      org.edgexfoundry.service: {{.Values.edgex.system.name}}
+      org.edgexfoundry.service: {{.Values.edgex.app.system}}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: {{.Values.edgex.system.name}}
+        org.edgexfoundry.service: {{.Values.edgex.app.system}}
     spec:
       containers:
-      - name: {{.Values.edgex.system.name}}
-        image: {{.Values.edgex.system.image}}
-        imagePullPolicy: Always
+      - name: {{.Values.edgex.app.system}}
+        image: {{.Values.edgex.image.system.repository}}:{{.Values.edgex.image.system.tag}}
+        imagePullPolicy: {{.Values.edgex.image.system.pullPolicy}}
         ports:
         - containerPort: 48090
         env:
+        - name: Service_Host
+          value: 0.0.0.0
         - name: edgex_registry
-          value: consul://{{.Values.edgex.consul.name}}:8500
-        - name: Clients_CoreData_Host
-          value: {{.Values.edgex.data.name}}
-        - name: Clients_Logging_Host
-          value: {{.Values.edgex.logging.name}}
+          value: consul://{{.Values.edgex.app.core.consul}}:8500
         - name: EDGEX_SECURITY_SECRET_STORE
           value: "false"
-        - name: Logging_EnableRemote
-          value: "true"
         readinessProbe:
           httpGet:
             path: /api/v1/ping
@@ -49,11 +45,15 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           failureThreshold: 3
-        resources: {}
-      initContainers:
-      - name: wait-for-consul
-        image: busybox:1.28
-        command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
-      hostname: {{.Values.edgex.system.name}}
+      {{- if .Values.edgex.resources.system.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.system.limits.memory }}
+            cpu: {{ .Values.edgex.resources.system.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.system.requests.memory }}
+            cpu: {{ .Values.edgex.resources.system.requests.cpu }}
+      {{- end}}
+      hostname: {{.Values.edgex.app.system}}
       restartPolicy: Always
 status: {}

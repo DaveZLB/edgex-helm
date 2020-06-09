@@ -2,49 +2,52 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.appServiceRules.name}}
-  name: {{.Values.edgex.appServiceRules.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.appservice.rules}}
+  name: {{.Values.edgex.app.appservice.rules}}
 spec:
-  replicas: 1
+  replicas: {{.Values.edgex.replicas.appservice.rules}}
   selector:
     matchLabels:
-      org.edgexfoundry.service: {{.Values.edgex.appServiceRules.name}}
+      org.edgexfoundry.service: {{.Values.edgex.app.appservice.rules}}
   strategy: {}
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: {{.Values.edgex.appServiceRules.name}}
+        org.edgexfoundry.service: {{.Values.edgex.app.appservice.rules}}
     spec:
       containers:
-      - name: {{.Values.edgex.appServiceRules.name}}
-        image: {{.Values.edgex.appServiceRules.image}}
-        imagePullPolicy: Always
+      - name: {{.Values.edgex.app.appservice.rules}}
+        image: {{.Values.edgex.image.appservice.rules.repository}}:{{.Values.edgex.image.appservice.rules.tag}}
+        imagePullPolicy: {{.Values.edgex.image.appservice.rules.pullPolicy}}
         ports:
         - containerPort: 48100
         env:
-        - name: Clients_CoreData_Host
-          value: {{.Values.edgex.data.name}}
-        - name: Clients_Logging_Host
-          value: {{.Values.edgex.logging.name}}
+        - name: edgex_registry
+          value: consul://{{.Values.edgex.app.core.consul}}:8500
         - name: EDGEX_SECURITY_SECRET_STORE
           value: "false"
-        - name: Logging_EnableRemote
-          value: "true"
-        - name: MessageBus_SubscribeHost_Host
-          value: {{.Values.edgex.data.name}}
-        - name: Service_Host
-          value: {{.Values.edgex.appServiceRules.name}}
+        # Read rules-engine configuration.toml
         - name: edgex_profile
           value: rules-engine
-        - name: edgex_registry
-          value: consul://{{.Values.edgex.consul.name}}:8500
+        # Override service section in the confituration.toml
         - name: edgex_service
-          value: http://{{.Values.edgex.appServiceRules.name}}:48100
-        resources: {}
-      initContainers:
-      - name: wait-for-consul
-        image: busybox:1.28
-        command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
-      hostname: {{.Values.edgex.appServiceRules.name}}
+          value: http://{{.Values.edgex.app.appservice.rules}}:48100
+        # Override clients section in the confituration.toml
+        - name: Clients_CoreData_Host
+          value: {{.Values.edgex.app.core.data}}
+        - name: Clients_Logging_Host
+          value: {{.Values.edgex.app.support.logging}}
+        - name: Logging_EnableRemote
+          value: "false"
+      {{- if .Values.edgex.resources.appservice.rules.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.appservice.rules.limits.memory }}
+            cpu: {{ .Values.edgex.resources.appservice.rules.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.appservice.rules.requests.memory }}
+            cpu: {{ .Values.edgex.resources.appservice.rules.requests.cpu }}
+      {{- end}}
+      hostname: {{.Values.edgex.app.appservice.rules}}
       restartPolicy: Always
 status: {}

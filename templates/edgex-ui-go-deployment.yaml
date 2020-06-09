@@ -2,24 +2,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    org.edgexfoundry.service: {{.Values.edgex.ui.name}}
-  name: {{.Values.edgex.ui.name}}
+    org.edgexfoundry.service: {{.Values.edgex.app.ui}}
+  name: {{.Values.edgex.app.ui}}
 spec:
-  replicas: 1
+  replicas: {{.Values.edgex.replicas.ui}}
   selector:
     matchLabels:
-      org.edgexfoundry.service: {{.Values.edgex.ui.name}}
+      org.edgexfoundry.service: {{.Values.edgex.app.ui}}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        org.edgexfoundry.service: {{.Values.edgex.ui.name}}
+        org.edgexfoundry.service: {{.Values.edgex.app.ui}}
     spec:
       containers:
-      - name: {{.Values.edgex.ui.name}}
-        image: {{.Values.edgex.ui.image}}
-        imagePullPolicy: Always
+      - name: {{.Values.edgex.app.ui}}
+        image: {{.Values.edgex.image.ui.repository}}:{{.Values.edgex.image.ui.tag}}
+        imagePullPolicy: {{.Values.edgex.image.ui.pullPolicy}}
         ports:
         - containerPort: 4000
         readinessProbe:
@@ -38,7 +38,15 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           failureThreshold: 3
-        resources: {}
-      hostname: {{.Values.edgex.ui.name}}
+      {{- if .Values.edgex.resources.ui.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.ui.limits.memory }}
+            cpu: {{ .Values.edgex.resources.ui.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.ui.requests.memory }}
+            cpu: {{ .Values.edgex.resources.ui.requests.cpu }}
+      {{- end}}
+      hostname: {{.Values.edgex.app.ui}}
       restartPolicy: Always
 status: {}
