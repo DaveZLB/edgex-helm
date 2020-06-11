@@ -19,6 +19,22 @@ $ helm install --name fuji .
 $ cd edgex-kubernetes-support
 $ helm delete fuji --purge
 ```
+- **Test EdgeX**
+
+You can test whether the Edgex services start successfully
+```$xslt
+$ curl http://localhost:48080/api/v1/ping
+$ curl http://localhost:48081/api/v1/ping
+$ curl http://localhost:48082/api/v1/ping
+$ curl http://localhost:48060/api/v1/ping
+$ curl http://localhost:48085/api/v1/ping
+```
+
+- **Access EdgeX UI**
+
+With a modern browser, navigate to http://localhost:4000
+Use details see [EdgeX UI doc](https://github.com/edgexfoundry/edgex-ui-go)
+
 ## Tips
 
 - Helm version 2 and version 3 are different. Only version 2 is tested here

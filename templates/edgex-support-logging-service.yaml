@@ -11,5 +11,6 @@ spec:
     targetPort: 48061
   selector:
     org.edgexfoundry.service: {{.Values.edgex.app.support.logging}}
+  type: {{.Values.edgex.serviceType}}
 status:
   loadBalancer: {}

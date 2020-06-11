@@ -11,5 +11,6 @@ spec:
     targetPort: 49990
   selector:
     org.edgexfoundry.service: {{.Values.edgex.app.device.virtual}}
+  type: {{.Values.edgex.serviceType}}
 status:
   loadBalancer: {}

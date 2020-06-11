@@ -11,5 +11,6 @@ spec:
     targetPort: 48060
   selector:
     org.edgexfoundry.service: {{.Values.edgex.app.support.notifications}}
+  type: {{.Values.edgex.serviceType}}
 status:
   loadBalancer: {}
