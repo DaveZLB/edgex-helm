@@ -33,6 +33,7 @@ spec:
   initContainers:
   - name: wait-for-consul
     image: busybox:1.28
+    imagePullPolicy: IfNotPresent
     command: ['sh', '-c', 'until wget edgex-core-consul:8500; do echo waiting for consul; sleep 2; done;']
   hostname: {{.Values.edgex.app.configseed}}
   restartPolicy: Never

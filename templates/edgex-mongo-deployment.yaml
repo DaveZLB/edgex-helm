@@ -30,15 +30,15 @@ spec:
         readinessProbe:
           tcpSocket:
             port: 27017
-          initialDelaySeconds: 15
-          periodSeconds: 30
+          initialDelaySeconds: 5
+          periodSeconds: 15
           successThreshold: 1
           failureThreshold: 3
         livenessProbe:
           tcpSocket:
             port: 27017
-          initialDelaySeconds: 15
-          periodSeconds: 30
+          initialDelaySeconds: 5
+          periodSeconds: 15
           successThreshold: 1
           failureThreshold: 3
       {{- if .Values.edgex.resources.mongo.enforceLimits }}

@@ -33,6 +33,15 @@ spec:
           value: {{.Values.edgex.app.support.logging}}
         - name: Logging_EnableRemote
           value: "false"
+      initContainers:
+      - name: wait-for-core-data
+        image: busybox:1.28
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'until wget edgex-core-data:48080/api/v1/ping; do echo waiting for core data; sleep 2; done;']
+      - name: wait-for-core-command
+        image: busybox:1.28
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'until wget edgex-core-command:48082/api/v1/ping; do echo waiting for core command; sleep 2; done;']
       {{- if .Values.edgex.resources.device.virtual.enforceLimits }}
         resources:
           limits:

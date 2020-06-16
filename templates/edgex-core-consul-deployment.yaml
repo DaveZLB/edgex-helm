@@ -22,15 +22,19 @@ spec:
         imagePullPolicy: {{.Values.edgex.image.core.consul.pullPolicy}}
         ports:
         - containerPort: 8400
-        - containerPort: 8500
+        - name: liveness-port
+          containerPort: 8500
         livenessProbe:
-          httpGet:
-            path: /
+          tcpSocket:
             port: 8500
-          initialDelaySeconds: 15
-          periodSeconds: 30
-          successThreshold: 1
-          failureThreshold: 3
+          periodSeconds: 5
+        startupProbe:
+          tcpSocket:
+            port: 8500
+          initialDelaySeconds: 1
+          failureThreshold: 30
+          periodSeconds: 5
+
       {{- if .Values.edgex.resources.core.consul.enforceLimits }}
         resources:
           limits:

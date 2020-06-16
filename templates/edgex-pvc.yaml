@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: consul-config
 spec:
+  storageClassName: edgex-consul-config-volume
   accessModes:
   - ReadWriteMany
   resources:
@@ -16,6 +17,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: consul-data
 spec:
+  storageClassName: edgex-consul-data-volume
   accessModes:
   - ReadWriteMany
   resources:
@@ -29,6 +31,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: db-data
 spec:
+  storageClassName: edgex-mongo-volume
   accessModes:
   - ReadWriteMany
   resources:
@@ -42,6 +45,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: log-data
 spec:
+  storageClassName: edgex-support-logging-volume
   accessModes:
   - ReadWriteMany
   resources:

@@ -32,16 +32,16 @@ spec:
           httpGet:
             path: /api/v1/ping
             port: 48080
-          initialDelaySeconds: 15
-          periodSeconds: 30
+          initialDelaySeconds: 5
+          periodSeconds: 15
           successThreshold: 1
           failureThreshold: 3
         livenessProbe:
           httpGet:
             path: /api/v1/ping
             port: 48080
-          initialDelaySeconds: 15
-          periodSeconds: 30
+          initialDelaySeconds: 5
+          periodSeconds: 15
           successThreshold: 1
           failureThreshold: 3
       {{- if .Values.edgex.resources.core.data.enforceLimits }}
