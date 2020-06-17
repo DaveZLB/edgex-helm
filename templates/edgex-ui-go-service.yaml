@@ -11,6 +11,6 @@ spec:
     targetPort: 4000
   selector:
     org.edgexfoundry.service: {{.Values.edgex.app.ui}}
-  type: LoadBalancer
+  type: {{.Values.edgex.serviceType}}
 status:
   loadBalancer: {}

@@ -22,20 +22,35 @@ spec:
         imagePullPolicy: {{.Values.edgex.image.ui.pullPolicy}}
         ports:
         - containerPort: 4000
+        env:
+        - name: Clients_CoreData
+          value: {{.Values.edgex.app.core.data}}
+        - name: Clients_Metadata
+          value: {{.Values.edgex.app.core.metadata}}
+        - name: Clients_CoreCommand
+          value: {{.Values.edgex.app.core.command}}
+        - name: Clients_Notification
+          value: {{.Values.edgex.app.support.notifications}}
+        - name: Clients_Scheduler
+          value: {{.Values.edgex.app.support.scheduler}}
+        - name: Clients_RuleEngine
+          value: {{.Values.edgex.app.support.rulesengine}}
+        - name: Registry_Host
+          value: {{.Values.edgex.app.core.consul}}
         readinessProbe:
           httpGet:
             path: /api/v1/ping
             port: 4000
-          initialDelaySeconds: 15
-          periodSeconds: 30
+          initialDelaySeconds: 5
+          periodSeconds: 15
           successThreshold: 1
           failureThreshold: 3
         livenessProbe:
           httpGet:
             path: /api/v1/ping
             port: 4000
-          initialDelaySeconds: 15
-          periodSeconds: 30
+          initialDelaySeconds: 5
+          periodSeconds: 15
           successThreshold: 1
           failureThreshold: 3
       {{- if .Values.edgex.resources.ui.enforceLimits }}

@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: edgex-consul-config-volume
+  labels:
+    app: edgex-consul-config-volume
+spec:
+  storageClassName: edgex-consul-config-volume
+  capacity:
+    storage: 500Mi
+  accessModes:
+  - ReadWriteMany
+  hostPath:
+    path: "/mnt/edgex-consul-config"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: edgex-consul-data-volume
+  labels:
+    app: edgex-consul-data-volume
+spec:
+  storageClassName: edgex-consul-data-volume
+  capacity:
+    storage: 500Mi
+  accessModes:
+  - ReadWriteMany
+  hostPath:
+    path: "/mnt/edgex-consul-data"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: edgex-mongo-volume
+  labels:
+    app: edgex-mongo-volume
+spec:
+  storageClassName: edgex-mongo-volume
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteMany
+  hostPath:
+    path: "/mnt/edgex-mongo"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: edgex-support-logging-volume
+  labels:
+    app: edgex-support-logging-volume
+spec:
+  storageClassName: edgex-support-logging-volume
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteMany
+  hostPath:
+    path: "/mnt/edgex-support-logging"

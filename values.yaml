@@ -2,9 +2,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # edgex defines a set of configuration properties for application-level concerns
 edgex:
+  # Option value: ClusterIP/NodePort/LoadBalancer
+  serviceType: LoadBalancer
+
   # app defines a single point in naming/referring to an application. For each application, the value
   # define its label name, resource name or base of the resource name, and service name.
   app:
@@ -74,8 +76,8 @@ edgex:
         tag: 1.1.1
         pullPolicy: IfNotPresent
     ui:
-      repository: edgexfoundry/docker-edgex-ui-go
-      tag: 1.1.0
+      repository: davezlb/docker-edgex-ui-go
+      tag: 1.2.1
       pullPolicy: IfNotPresent
     system:
       repository: edgexfoundry/docker-sys-mgmt-agent-go
