@@ -22,13 +22,16 @@ spec:
         imagePullPolicy: {{.Values.edgex.image.system.pullPolicy}}
         ports:
         - containerPort: 48090
+        envFrom:
+        - configMapRef:
+            name: edgex-common-variables
         env:
         - name: Service_Host
-          value: 0.0.0.0
-        - name: edgex_registry
-          value: consul://{{.Values.edgex.app.core.consul}}:8500
-        - name: EDGEX_SECURITY_SECRET_STORE
-          value: "false"
+          value: {{.Values.edgex.app.system}}
+        - name: ExecutorPath
+          value: "/sys-mgmt-executor"
+        - name: MetricsMechanism
+          value: "executor"
         readinessProbe:
           httpGet:
             path: /api/v1/ping

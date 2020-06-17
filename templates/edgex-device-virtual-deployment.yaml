@@ -23,25 +23,19 @@ spec:
         ports:
         - containerPort: 49990
         env:
-        - name: edgex_registry
-          value: consul://{{.Values.edgex.app.core.consul}}:8500
-        - name: Clients_Data_Host
-          value: {{.Values.edgex.app.core.data}}
-        - name: Clients_Metadata_Host
-          value: {{.Values.edgex.app.core.metadata}}
-        - name: Clients_Logging_Host
-          value: {{.Values.edgex.app.support.logging}}
-        - name: Logging_EnableRemote
-          value: "false"
-      initContainers:
-      - name: wait-for-core-data
-        image: busybox:1.28
-        imagePullPolicy: IfNotPresent
-        command: ['sh', '-c', 'until wget edgex-core-data:48080/api/v1/ping; do echo waiting for core data; sleep 2; done;']
-      - name: wait-for-core-command
-        image: busybox:1.28
-        imagePullPolicy: IfNotPresent
-        command: ['sh', '-c', 'until wget edgex-core-command:48082/api/v1/ping; do echo waiting for core command; sleep 2; done;']
+        - name: Service_Host
+          value: {{.Values.edgex.app.device.virtual}}
+        envFrom:
+        - configMapRef:
+            name: edgex-common-variables
+        livenessProbe:
+          tcpSocket:
+            port: 49990
+          periodSeconds: 5
+        readinessProbe:
+          tcpSocket:
+            port: 49990
+          periodSeconds: 5
       {{- if .Values.edgex.resources.device.virtual.enforceLimits }}
         resources:
           limits:

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: edgex-common-variables
+data:
+  EDGEX_SECURITY_SECRET_STORE: "false"
+  edgex_registry: consul://{{.Values.edgex.app.core.consul}}:8500
+  Registry_Host: {{.Values.edgex.app.core.consul}}
+  Clients_CoreData_Host: {{.Values.edgex.app.core.data}}
+  Clients_Notifications_Host: {{.Values.edgex.app.support.notifications}}
+  Clients_Metadata_Host: {{.Values.edgex.app.core.metadata}}
+  Clients_Command_Host: {{.Values.edgex.app.core.command}}
+  Clients_Scheduler_Host: {{.Values.edgex.app.support.scheduler}}
+  Clients_RulesEngine_Host: {{.Values.edgex.app.support.rulesengine}}
+  Clients_VirtualDevice_Host: {{.Values.edgex.app.device.virtual}}
+  Databases_Primary_Host: {{.Values.edgex.app.redis}}
+  Logging_EnableRemote: "false"

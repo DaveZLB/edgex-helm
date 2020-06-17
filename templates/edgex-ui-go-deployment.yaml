@@ -23,17 +23,17 @@ spec:
         ports:
         - containerPort: 4000
         env:
-        - name: Clients_CoreData
+        - name: Clients_CoreData_Host
           value: {{.Values.edgex.app.core.data}}
-        - name: Clients_Metadata
+        - name: Clients_Metadata_Host
           value: {{.Values.edgex.app.core.metadata}}
-        - name: Clients_CoreCommand
+        - name: Clients_CoreCommand_Host
           value: {{.Values.edgex.app.core.command}}
-        - name: Clients_Notification
+        - name: Clients_Notification_Host
           value: {{.Values.edgex.app.support.notifications}}
-        - name: Clients_Scheduler
+        - name: Clients_Scheduler_Host
           value: {{.Values.edgex.app.support.scheduler}}
-        - name: Clients_RuleEngine
+        - name: Clients_RuleEngine_Host
           value: {{.Values.edgex.app.support.rulesengine}}
         - name: Registry_Host
           value: {{.Values.edgex.app.core.consul}}

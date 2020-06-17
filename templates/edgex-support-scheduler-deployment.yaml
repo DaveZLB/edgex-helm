@@ -22,11 +22,16 @@ spec:
         imagePullPolicy: {{.Values.edgex.image.support.scheduler.pullPolicy}}
         ports:
         - containerPort: 48085
+        envFrom:
+        - configMapRef:
+            name: edgex-common-variables
         env:
-        - name: edgex_registry
-          value: consul://{{.Values.edgex.app.core.consul}}:8500
-        - name: EDGEX_SECURITY_SECRET_STORE
-          value: "false"
+        - name: Service_Host
+          value: {{.Values.edgex.app.support.scheduler}}
+        - name: IntervalActions_ScrubPushed_Host
+          value: {{.Values.edgex.app.core.data}}
+        - name: IntervalActions_ScrubAged_Host
+          value: {{.Values.edgex.app.core.data}}
         readinessProbe:
           httpGet:
             path: /api/v1/ping

@@ -23,10 +23,11 @@ spec:
         ports:
         - containerPort: 48060
         env:
-        - name: edgex_registry
-          value: consul://{{.Values.edgex.app.core.consul}}:8500
-        - name: EDGEX_SECURITY_SECRET_STORE
-          value: "false"
+        - name: Service_Host
+          value: {{.Values.edgex.app.support.notifications}}
+        envFrom:
+        - configMapRef:
+            name: edgex-common-variables
         readinessProbe:
           httpGet:
             path: /api/v1/ping
