@@ -39,9 +39,8 @@ Use details see [EdgeX UI doc](https://github.com/edgexfoundry/edgex-ui-go)
 
 - Helm version 2 and version 3 are different. Only version 2 is tested here
 - This project is based on [docker-compose-geneva-redis-no-secty.yml](https://github.com/edgexfoundry/developer-scripts/blob/master/releases/geneva/compose-files/docker-compose-geneva-redis-no-secty.yml),
-you can implement a secure version based on this.
+you can implement your customized version based on this.
 - Since other edgex services need to rely on consul to obtain configuration or register themselves to consul, other services cannot run normally until consul starts successfully.
-- The role of config seed pod is to push the configurations of all services to consul.
 - About EdgeX Volume
 
 Unlike the docker-compose files for this release (which use a separate Docker volume container), the manifest files mount host based volumes as follows:
