@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: {{.Values.edgex.app.device.rest}}
+  name: {{.Values.edgex.app.device.rest}}
+spec:
+  replicas: {{.Values.edgex.replicas.device.rest}}
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: {{.Values.edgex.app.device.rest}}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: {{.Values.edgex.app.device.rest}}
+    spec:
+      containers:
+      - name: {{.Values.edgex.app.device.rest}}
+        image: {{.Values.edgex.image.device.rest.repository}}:{{.Values.edgex.image.device.rest.tag}}
+        imagePullPolicy: {{.Values.edgex.image.device.rest.pullPolicy}}
+        ports:
+        - containerPort: 49986
+        env:
+        - name: Service_Host
+          value: {{.Values.edgex.app.device.rest}}
+        envFrom:
+        - configMapRef:
+            name: edgex-common-variables
+        livenessProbe:
+          tcpSocket:
+            port: 49986
+          periodSeconds: 5
+        readinessProbe:
+          tcpSocket:
+            port: 49986
+          periodSeconds: 5
+      {{- if .Values.edgex.resources.device.rest.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.device.rest.limits.memory }}
+            cpu: {{ .Values.edgex.resources.device.rest.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.device.rest.requests.memory }}
+            cpu: {{ .Values.edgex.resources.device.rest.requests.cpu }}
+      {{- end}}
+      hostname: {{.Values.edgex.app.device.rest}}
+      restartPolicy: Always
+status: {}

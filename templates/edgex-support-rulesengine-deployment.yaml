@@ -21,22 +21,32 @@ spec:
         imagePullPolicy: {{.Values.edgex.image.support.rulesengine.pullPolicy}}
         ports:
         - containerPort: 48075
-        readinessProbe:
-          httpGet:
-            path: /api/v1/ping
-            port: 48075
-          initialDelaySeconds: 5
-          periodSeconds: 15
-          successThreshold: 1
-          failureThreshold: 3
+        - containerPort: 20498
+        env:
+#        - name: KUIPER_DEBUG
+#          value: "true"
+        - name: KUIPER_CONSOLE_LOG
+          value: "true"
+        - name: KUIPER_REST_PORT
+          value: "48075"
+        - name: EDGEX_SERVER
+          value: {{.Values.edgex.app.appservice.rules}}
+        - name: EDGEX_SERVICE_SERVER
+          value: http://{{.Values.edgex.app.core.data}}:48080
+        - name: EDGEX_TOPIC
+          value: "events"
+        - name: EDGEX_PROTOCOL
+          value: "tcp"
+        - name: EDGEX_PORT
+          value: "5566"
         livenessProbe:
-          httpGet:
-            path: /api/v1/ping
+          tcpSocket:
             port: 48075
-          initialDelaySeconds: 5
-          periodSeconds: 15
-          successThreshold: 1
-          failureThreshold: 3
+          periodSeconds: 5
+        readinessProbe:
+          tcpSocket:
+            port: 48075
+          periodSeconds: 5
       {{- if .Values.edgex.resources.support.rulesengine.enforceLimits }}
         resources:
           limits:

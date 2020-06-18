@@ -22,11 +22,14 @@ spec:
         imagePullPolicy: {{.Values.edgex.image.core.metadata.pullPolicy}}
         ports:
         - containerPort: 48081
+        envFrom:
+        - configMapRef:
+            name: edgex-common-variables
         env:
-        - name: edgex_registry
-          value: consul://{{.Values.edgex.app.core.consul}}:8500
-        - name: EDGEX_SECURITY_SECRET_STORE
-          value: "false"
+        - name: Service_Host
+          value: {{.Values.edgex.app.core.metadata}}
+        - name: Notifications_Sender
+          value: {{.Values.edgex.app.core.metadata}}
         readinessProbe:
           httpGet:
             path: /api/v1/ping

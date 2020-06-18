@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    org.edgexfoundry.service: {{.Values.edgex.app.redis}}
+  name: {{.Values.edgex.app.redis}}
+spec:
+  replicas: {{.Values.edgex.replicas.redis}}
+  selector:
+    matchLabels:
+      org.edgexfoundry.service: {{.Values.edgex.app.redis}}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        org.edgexfoundry.service: {{.Values.edgex.app.redis}}
+    spec:
+      containers:
+      - name: {{.Values.edgex.app.redis}}
+        image: {{.Values.edgex.image.redis.repository}}:{{.Values.edgex.image.redis.tag}}
+        imagePullPolicy: {{.Values.edgex.image.redis.pullPolicy}}
+        ports:
+        - containerPort: 6379
+        envFrom:
+        - configMapRef:
+            name: edgex-common-variables
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+          periodSeconds: 5
+        readinessProbe:
+          tcpSocket:
+            port: 6379
+          periodSeconds: 5
+      {{- if .Values.edgex.resources.redis.enforceLimits }}
+        resources:
+          limits:
+            memory: {{ .Values.edgex.resources.redis.limits.memory }}
+            cpu: {{ .Values.edgex.resources.redis.limits.cpu }}
+          requests:
+            memory: {{ .Values.edgex.resources.redis.requests.memory }}
+            cpu: {{ .Values.edgex.resources.redis.requests.cpu }}
+      {{- end}}
+      hostname: {{.Values.edgex.app.redis}}
+      restartPolicy: Always
+status: {}

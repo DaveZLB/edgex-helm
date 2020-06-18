@@ -19,77 +19,72 @@ edgex:
       notifications: edgex-support-notifications
       rulesengine: edgex-support-rulesengine
       scheduler: edgex-support-scheduler
-      logging: edgex-support-logging
     appservice:
       rules: edgex-app-service-configurable-rules
     device:
       virtual: edgex-device-virtual
+      rest: edgex-device-rest
     ui: edgex-ui-go
     system: edgex-sys-mgmt-agent
-    mongo: edgex-mongo
-    configseed: edgex-config-seed
+    redis: edgex-redis
 
   # image defines configuration properties for docker-image-level concerns
   image:
     core:
       command:
         repository: edgexfoundry/docker-core-command-go
-        tag: 1.1.0
+        tag: 1.2.1
         pullPolicy: IfNotPresent
       data:
         repository: edgexfoundry/docker-core-data-go
-        tag: 1.1.0
+        tag: 1.2.1
         pullPolicy: IfNotPresent
       metadata:
         repository: edgexfoundry/docker-core-metadata-go
-        tag: 1.1.0
+        tag: 1.2.1
         pullPolicy: IfNotPresent
       consul:
-        repository: consul
-        tag: 1.3.1
+        repository: edgexfoundry/docker-edgex-consul
+        tag: 1.2.0
         pullPolicy: IfNotPresent
     support:
       notifications:
         repository: edgexfoundry/docker-support-notifications-go
-        tag: 1.1.0
+        tag: 1.2.1
         pullPolicy: IfNotPresent
       rulesengine:
-        repository: edgexfoundry/docker-support-rulesengine
-        tag: 1.1.0
+        repository: emqx/kuiper
+        tag: 0.4.2-alpine
         pullPolicy: IfNotPresent
       scheduler:
         repository: edgexfoundry/docker-support-scheduler-go
-        tag: 1.1.0
-        pullPolicy: IfNotPresent
-      logging:
-        repository: edgexfoundry/docker-support-logging-go
-        tag: 1.1.0
+        tag: 1.2.1
         pullPolicy: IfNotPresent
     appservice:
       rules:
         repository: edgexfoundry/docker-app-service-configurable
-        tag: 1.0.0
+        tag: 1.2.0
         pullPolicy: IfNotPresent
     device:
       virtual:
         repository: edgexfoundry/docker-device-virtual-go
+        tag: 1.2.1
+        pullPolicy: IfNotPresent
+      rest:
+        repository: edgexfoundry/docker-device-rest-go
         tag: 1.1.1
         pullPolicy: IfNotPresent
     ui:
-      repository: davezlb/docker-edgex-ui-go
+      repository: edgexfoundry/docker-edgex-ui-go
       tag: 1.2.1
       pullPolicy: IfNotPresent
     system:
       repository: edgexfoundry/docker-sys-mgmt-agent-go
-      tag: 1.1.0
+      tag: 1.2.1
       pullPolicy: IfNotPresent
-    mongo:
-      repository: edgexfoundry/docker-edgex-mongo
-      tag: 1.1.0
-      pullPolicy: IfNotPresent
-    configseed:
-      repository: edgexfoundry/docker-core-config-seed-go
-      tag: 1.1.0
+    redis:
+      repository: redis
+      tag: 5.0.8-alpine
       pullPolicy: IfNotPresent
 
   # replicas defines the number of replicas in a Deployment for the respective application
@@ -103,14 +98,14 @@ edgex:
       notifications: 1
       rulesengine: 1
       scheduler: 1
-      logging: 1
     appservice:
       rules: 1
     device:
       virtual: 1
+      rest: 1
     ui: 1
     system: 1
-    mongo: 1
+    redis: 1
 
   # resources defines the cpu and memory limits and requests for the respective application
   resources:
@@ -172,14 +167,6 @@ edgex:
         requests:
           cpu: 0.5
           memory: 256Mi
-      logging:
-        enforceLimits: false
-        limits:
-          cpu: 1
-          memory: 512Mi
-        requests:
-          cpu: 0.5
-          memory: 256Mi
     appservice:
       rules:
         enforceLimits: false
@@ -191,6 +178,14 @@ edgex:
           memory: 256Mi
     device:
       virtual:
+        enforceLimits: false
+        limits:
+          cpu: 1
+          memory: 512Mi
+        requests:
+          cpu: 0.5
+          memory: 256Mi
+      rest:
         enforceLimits: false
         limits:
           cpu: 1
@@ -214,7 +209,7 @@ edgex:
       requests:
         cpu: 0.5
         memory: 256Mi
-    mongo:
+    redis:
       enforceLimits: false
       limits:
         cpu: 1

@@ -1,7 +1,7 @@
 # EdgeX Foundry on Kubernetes
 
 A Helm chart to easily deploy the EdgeX IoT project on Kubernetes.
-Based on EdgeX [fuji](https://github.com/edgexfoundry/developer-scripts/tree/master/releases/fuji/compose-files) version.
+Based on EdgeX [Geneva](https://github.com/edgexfoundry/developer-scripts/tree/master/releases/geneva/compose-files) version.
 
 
 
@@ -12,12 +12,12 @@ Based on EdgeX [fuji](https://github.com/edgexfoundry/developer-scripts/tree/mas
 - **Deploy EdgeX**
 ```$xslt
 $ cd edgex-kubernetes-support
-$ helm install --name fuji .
+$ helm install --name geneva .
 ```
 - **Undeploy EdgeX**
 ```$xslt
 $ cd edgex-kubernetes-support
-$ helm delete fuji --purge
+$ helm delete geneva --purge
 ```
 - **Test EdgeX**
 
@@ -38,7 +38,7 @@ Use details see [EdgeX UI doc](https://github.com/edgexfoundry/edgex-ui-go)
 ## Tips
 
 - Helm version 2 and version 3 are different. Only version 2 is tested here
-- This project is based on [EdgeX fuji non-secure version](https://github.com/edgexfoundry/developer-scripts/blob/master/releases/fuji/compose-files/docker-compose-fuji-no-secty.yml),
+- This project is based on [docker-compose-geneva-redis-no-secty.yml](https://github.com/edgexfoundry/developer-scripts/blob/master/releases/geneva/compose-files/docker-compose-geneva-redis-no-secty.yml),
 you can implement a secure version based on this.
 - Since other edgex services need to rely on consul to obtain configuration or register themselves to consul, other services cannot run normally until consul starts successfully.
 - The role of config seed pod is to push the configurations of all services to consul.
@@ -53,6 +53,11 @@ Unlike the docker-compose files for this release (which use a separate Docker vo
 3、edgex-mongo's /data/db directory is mapped to the host's /mnt/edgex-mongo directory.
 
 4、edgex-support-logging's /edgex/logs directory is mapped to the host's /mnt/edgex-support-logging directory.
+
+## Some articles about deploying edgex to kubernetes
+
+- VMware China R&D Center
+https://mp.weixin.qq.com/s/ECdEkc9QdkVScn4Lvl_JJA
 
 ## Feedback
 

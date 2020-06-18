@@ -21,24 +21,36 @@ spec:
         imagePullPolicy: {{.Values.edgex.image.appservice.rules.pullPolicy}}
         ports:
         - containerPort: 48100
+        envFrom:
+        - configMapRef:
+            name: edgex-common-variables
         env:
-        - name: edgex_registry
-          value: consul://{{.Values.edgex.app.core.consul}}:8500
-        - name: EDGEX_SECURITY_SECRET_STORE
-          value: "false"
-        # Read rules-engine configuration.toml
         - name: edgex_profile
-          value: rules-engine
-        # Override service section in the confituration.toml
-        - name: edgex_service
-          value: http://{{.Values.edgex.app.appservice.rules}}:48100
-        # Override clients section in the confituration.toml
-        - name: Clients_CoreData_Host
+          value: "rules-engine"
+        - name: Service_Host
+          value: {{.Values.edgex.app.appservice.rules}}
+        - name: Service_Port
+          value: "48100"
+        - name: MessageBus_SubscribeHost_Host
           value: {{.Values.edgex.app.core.data}}
-        - name: Clients_Logging_Host
-          value: {{.Values.edgex.app.support.logging}}
-        - name: Logging_EnableRemote
-          value: "false"
+        - name: Binding_PublishTopic
+          value: "events"
+        readinessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 48100
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /api/v1/ping
+            port: 48100
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          successThreshold: 1
+          failureThreshold: 3
       {{- if .Values.edgex.resources.appservice.rules.enforceLimits }}
         resources:
           limits:

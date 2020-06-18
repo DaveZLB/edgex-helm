@@ -22,8 +22,15 @@ spec:
         imagePullPolicy: {{.Values.edgex.image.core.consul.pullPolicy}}
         ports:
         - containerPort: 8400
-        - name: liveness-port
-          containerPort: 8500
+        - containerPort: 8500
+        envFrom:
+        - configMapRef:
+            name: edgex-common-variables
+        env:
+        - name: EDGEX_DB
+          value: "redis"
+        - name: EDGEX_SECURE
+          value: "false"
         livenessProbe:
           tcpSocket:
             port: 8500
