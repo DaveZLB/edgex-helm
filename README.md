@@ -1,24 +1,45 @@
 # EdgeX Foundry on Kubernetes
 
-A Helm chart to easily deploy the EdgeX IoT project on Kubernetes.
+A [Helm](https://helm.sh/) chart to easily deploy the EdgeX IoT project on Kubernetes.
 Based on EdgeX [Geneva](https://github.com/edgexfoundry/developer-scripts/tree/master/releases/geneva/compose-files) version.
 
+## Prerequisites
 
+- Kubernetes cluster 1.10+
+- [Helm](https://helm.sh/) 2.8.0+
 
-## Get Start
+## Installation
 
-- Install [Helm](https://v2.helm.sh/docs/)
+Install the EdgeX helm chart with a release name edgex-geneva
 
-- **Deploy EdgeX**
-```$xslt
-$ cd edgex-kubernetes-support
-$ helm install --name geneva .
+- helm2
+
 ```
-- **Undeploy EdgeX**
-```$xslt
-$ cd edgex-kubernetes-support
-$ helm delete geneva --purge
+$ git clone https://github.com/DaveZLB/edgex-kubernetes-support.git
+$ helm install --name edgex-geneva edgex-kubernetes-support
 ```
+
+- helm3
+
+```bash
+$ git clone https://github.com/DaveZLB/edgex-kubernetes-support.git
+$ helm install edgex-geneva edgex-kubernetes-support
+```
+
+## Uninstallation
+
+- helm2
+
+```bash
+helm delete edgex-geneva --purge
+```
+
+- helm3
+
+```bash
+helm uninstall edgex-geneva
+```
+
 - **Test EdgeX**
 
 You can test whether the Edgex services start successfully
@@ -37,13 +58,11 @@ Use details see [EdgeX UI doc](https://github.com/edgexfoundry/edgex-ui-go)
 
 ## Tips
 
-- Helm version 2 and version 3 are different. Only version 2 is tested here
 - This project is based on [docker-compose-geneva-redis-no-secty.yml](https://github.com/edgexfoundry/developer-scripts/blob/master/releases/geneva/compose-files/docker-compose-geneva-redis-no-secty.yml),
 you can implement your customized version based on this.
+- Since the EdgeX pods communicates with each other through the kubernetes service name, make sure the kubernetes DNS is enabled.
 - Since other edgex services need to rely on consul to obtain configuration or register themselves to consul, other services cannot run normally until consul starts successfully.
-- About EdgeX Volume
-
-Unlike the docker-compose files for this release (which use a separate Docker volume container), the manifest files mount host based volumes as follows:
+- Unlike the docker-compose files for this release (which use a separate Docker volume container), the manifest files mount host based volumes as follows:
 
 1、edgex-core-consul's /consul/config directory is mapped to the host's /mnt/edgex-consul-config directory.
 

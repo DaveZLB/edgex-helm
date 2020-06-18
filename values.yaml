@@ -24,7 +24,7 @@ edgex:
     device:
       virtual: edgex-device-virtual
       rest: edgex-device-rest
-    ui: edgex-ui-go
+    ui: edgex-ui
     system: edgex-sys-mgmt-agent
     redis: edgex-redis
 
