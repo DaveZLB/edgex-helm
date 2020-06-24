@@ -31,7 +31,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: db-data
 spec:
-  storageClassName: edgex-mongo-volume
+  storageClassName: edgex-db-volume
   accessModes:
   - ReadWriteMany
   resources:

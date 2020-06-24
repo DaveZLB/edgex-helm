@@ -68,7 +68,7 @@ you can implement your customized version based on this.
 
 2、edgex-core-consul's /consul/data directory is mapped to the host's /mnt/edgex-consul-data directory.
 
-3、edgex-mongo's /data/db directory is mapped to the host's /mnt/edgex-mongo directory.
+3、edgex-db's /data/db directory is mapped to the host's /mnt/edgex-db directory.
 
 4、edgex-support-logging's /edgex/logs directory is mapped to the host's /mnt/edgex-support-logging directory.
 

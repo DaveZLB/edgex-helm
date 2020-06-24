@@ -31,17 +31,17 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: edgex-mongo-volume
+  name: edgex-db-volume
   labels:
-    app: edgex-mongo-volume
+    app: edgex-db-volume
 spec:
-  storageClassName: edgex-mongo-volume
+  storageClassName: edgex-db-volume
   capacity:
     storage: 1Gi
   accessModes:
   - ReadWriteMany
   hostPath:
-    path: "/mnt/edgex-mongo"
+    path: "/mnt/edgex-db"
 ---
 apiVersion: v1
 kind: PersistentVolume
