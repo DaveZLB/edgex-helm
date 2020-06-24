@@ -42,6 +42,13 @@ spec:
             memory: {{ .Values.edgex.resources.redis.requests.memory }}
             cpu: {{ .Values.edgex.resources.redis.requests.cpu }}
       {{- end}}
+        volumeMounts:
+          - mountPath: /data
+            name: db-data
       hostname: {{.Values.edgex.app.redis}}
       restartPolicy: Always
+      volumes:
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: db-data
 status: {}
