@@ -46,7 +46,7 @@ EdgeX on kubernetes using NodePort type to expose services by default,You can us
 
 The ping command format:
 ```bash
-http://{NodeIP}:{NodePort}/api/v1/ping
+http://<ExternalIP>:<NodePort>/api/v1/ping
 
 ```
 For example, the edgex-core-data ping command format:
@@ -58,7 +58,7 @@ curl http://localhost:30080/api/v1/ping
 
 ## Access EdgeX UI
 
-With a modern browser, navigate to http://localhost:30400.
+With a modern browser, navigate to http://\<ExternalIP\>:30400.
 
 Use details see [EdgeX UI doc](https://github.com/edgexfoundry/edgex-ui-go)
 

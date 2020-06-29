@@ -1,1 +1,25 @@
-TODO:
+Please wait for several minutes for EdgeX deployment to complete.
+Then you should be able to visit the EdgeX.
+
+Ping edgex-core-data
+curl http://localhost:{{.Values.expose.nodePort.core.data}}/api/v1/ping
+Ping edgex-core-metadata
+curl http://localhost:{{.Values.expose.nodePort.core.metadata}}/api/v1/ping
+Ping edgex-core-command
+curl http://localhost:{{.Values.expose.nodePort.core.command}}/api/v1/ping
+Ping edgex-support-notifications
+curl http://localhost:{{.Values.expose.nodePort.support.notifications}}/api/v1/ping
+Ping edgex-support-scheduler
+curl http://localhost:{{.Values.expose.nodePort.support.scheduler}}/api/v1/ping
+Ping edgex-support-ruleengine
+curl http://localhost:{{.Values.expose.nodePort.support.scheduler}}/
+Ping edgex-device-rest
+curl http://localhost:{{.Values.expose.nodePort.device.rest}}/api/v1/ping
+Ping edgex-device-virtual
+curl http://localhost:{{.Values.expose.nodePort.device.virtual}}/api/v1/ping
+Ping edgex-appservice-rules
+curl http://localhost:{{.Values.expose.nodePort.appservice.rules}}/api/v1/ping
+Ping edgex-system
+curl http://localhost:{{.Values.expose.nodePort.system}}/api/v1/ping
+Ping edgex-ui
+curl http://localhost:{{.Values.expose.nodePort.ui}}/
