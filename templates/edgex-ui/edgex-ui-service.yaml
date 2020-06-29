@@ -9,8 +9,9 @@ spec:
   - name: "4000"
     port: 4000
     targetPort: 4000
+    nodePort: {{.Values.expose.nodePort.ui}}
   selector:
     org.edgexfoundry.service: {{.Values.edgex.app.ui}}
-  type: {{.Values.edgex.serviceType}}
+  type: {{.Values.expose.type}}
 status:
   loadBalancer: {}

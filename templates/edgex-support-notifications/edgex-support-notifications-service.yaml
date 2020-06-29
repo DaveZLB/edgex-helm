@@ -9,8 +9,9 @@ spec:
   - name: "48060"
     port: 48060
     targetPort: 48060
+    nodePort: {{.Values.expose.nodePort.support.notifications}}
   selector:
     org.edgexfoundry.service: {{.Values.edgex.app.support.notifications}}
-  type: {{.Values.edgex.serviceType}}
+  type: {{.Values.expose.type}}
 status:
   loadBalancer: {}
