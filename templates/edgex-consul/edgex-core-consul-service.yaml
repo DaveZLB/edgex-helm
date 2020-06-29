@@ -12,8 +12,9 @@ spec:
   - name: "8500"
     port: 8500
     targetPort: 8500
+    nodePort: {{.Values.expose.nodePort.core.consul}}
   selector:
     org.edgexfoundry.service: {{.Values.edgex.app.core.consul}}
-  type: {{.Values.edgex.serviceType}}
+  type: {{.Values.expose.type}}
 status:
   loadBalancer: {}

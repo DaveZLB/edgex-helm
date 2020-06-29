@@ -2,11 +2,31 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+
+expose:
+  # Option value: ClusterIP/NodePort/LoadBalancer
+  type: NodePort
+  nodePort:
+    core:
+      data: 30080
+      metadata: 30081
+      command: 30082
+      consul: 30850
+    support:
+      rulesengine: 30075
+      notifications: 30060
+      scheduler: 30085
+    appservice:
+      rules: 30100
+    device:
+      virtual: 31990
+      rest: 31986
+    ui: 30400
+    system: 30090
+    redis: 30079
+
 # edgex defines a set of configuration properties for application-level concerns
 edgex:
-  # Option value: ClusterIP/NodePort/LoadBalancer
-  serviceType: LoadBalancer
-
   # app defines a single point in naming/referring to an application. For each application, the value
   # define its label name, resource name or base of the resource name, and service name.
   app:

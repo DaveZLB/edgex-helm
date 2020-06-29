@@ -9,8 +9,9 @@ spec:
   - name: "48100"
     port: 48100
     targetPort: 48100
+    nodePort: {{.Values.expose.nodePort.appservice.rules}}
   selector:
     org.edgexfoundry.service: {{.Values.edgex.app.appservice.rules}}
-  type: {{.Values.edgex.serviceType}}
+  type: {{.Values.expose.type}}
 status:
   loadBalancer: {}

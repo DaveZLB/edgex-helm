@@ -9,8 +9,9 @@ spec:
   - name: "49990"
     port: 49990
     targetPort: 49990
+    nodePort: {{.Values.expose.nodePort.device.virtual}}
   selector:
     org.edgexfoundry.service: {{.Values.edgex.app.device.virtual}}
-  type: {{.Values.edgex.serviceType}}
+  type: {{.Values.expose.type}}
 status:
   loadBalancer: {}
