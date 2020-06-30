@@ -76,7 +76,7 @@ edgex:
         tag: 1.1.1
         pullPolicy: IfNotPresent
     ui:
-      repository: davezlb/docker-edgex-ui-go
+      repository: edgexfoundry/docker-edgex-ui-go
       tag: 1.2.1
       pullPolicy: IfNotPresent
     system:
