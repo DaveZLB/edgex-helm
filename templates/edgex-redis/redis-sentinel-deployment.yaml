@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{.Values.edgex.app.redis}}-sentinel
+spec:
+  replicas: {{.Values.edgex.replicas.redis}}
+  template:
+    metadata:
+      labels:
+        app: "redis-ha"
+        name: {{.Values.edgex.app.redis}}-sentinel
+    spec:
+      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
+      containers:
+      - name: sentinel
+        image: {{.Values.edgex.image.redis.repository}}:{{.Values.edgex.image.redis.tag}}
+        imagePullPolicy: {{.Values.edgex.image.redis.pullPolicy}}
+        resources:
+{{ toYaml .Values.edgex.resources.redis.sentinel | indent 10 }}
+        env:
+          - name: SENTINEL
+            value: "true"
+          - name: REDIS_CHART_PREFIX
+            value: {{.Values.edgex.app.redis}}-
+        ports:
+          - containerPort: 26379

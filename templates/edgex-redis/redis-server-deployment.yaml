@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  # Pay attention to the redis-role label at runtime. The self-determination logic in the image sets this value accordingly.
+  name: {{.Values.edgex.app.redis}}-server
+  labels:
+    app: "redis-ha"
+    name: "redis-server"
+    redis-node: "true"
+spec:
+  replicas: {{.Values.edgex.replicas.redis}}
+  template:
+    metadata:
+      labels:
+        app: "redis-ha"
+        name: "redis-server"
+        redis-node: "true"
+    spec:
+      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
+      containers:
+      - name: redis
+        image: {{.Values.edgex.image.redis.repository}}:{{.Values.edgex.image.redis.tag}}
+        imagePullPolicy: {{.Values.edgex.image.redis.pullPolicy}}
+        resources:
+{{ toYaml .Values.edgex.resources.redis.server | indent 10 }}
+        env:
+          - name: REDIS_SENTINEL_SERVICE_HOST
+            value: "redis-sentinel"
+          - name: REDIS_CHART_PREFIX
+            value: {{.Values.edgex.app.redis}}-
+        ports:
+          - containerPort: 6379
+        volumeMounts:
+          - mountPath: /redis-master-data 
+            name: data
+      volumes:
+      - name: data
+

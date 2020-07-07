@@ -103,8 +103,8 @@ edgex:
       tag: 1.2.1
       pullPolicy: IfNotPresent
     redis:
-      repository: redis
-      tag: 5.0.8-alpine
+      repository: quay.io/smile/redis
+      tag: 4.0.6r2
       pullPolicy: IfNotPresent
 
   # replicas defines the number of replicas in a Deployment for the respective application
@@ -125,7 +125,7 @@ edgex:
       rest: 1
     ui: 1
     system: 1
-    redis: 1
+    redis: 3
 
   # resources defines the cpu and memory limits and requests for the respective application
   resources:
@@ -230,10 +230,25 @@ edgex:
         cpu: 0.5
         memory: 256Mi
     redis:
-      enforceLimits: false
-      limits:
-        cpu: 1
-        memory: 512Mi
-      requests:
-        cpu: 0.5
-        memory: 256Mi
+      server:
+        requests:
+          memory: 200Mi
+          cpu: 100m
+        limits:
+          memory: 700Mi
+      sentinel:
+        requests:
+          memory: 200Mi
+          cpu: 100m
+        limits:
+          memory: 200Mi
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
