@@ -54,3 +54,12 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+
+{{- define "redis-ha.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default "edgex-redis" .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
